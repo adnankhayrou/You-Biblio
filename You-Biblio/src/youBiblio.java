@@ -16,8 +16,8 @@ public class youBiblio {
                     "2. Show All Books\n"+
                     "3. Search For a Book\n"+
                     "4. Update Book\n"+
-                    "5. Delete Book\n"+
-            ":");
+                    "5. Delete Book\n");
+            System.out.println("Enter your choice : ");
             int ch=sc.nextInt();
             switch (ch){
                 case 1:
@@ -38,6 +38,12 @@ public class youBiblio {
                     bk.setStatus(status);
                     bk.addBook();
                     break;
+                case 2:
+                    bk.allBooks();
+                    break;
+                case 8:
+                    System.out.println("Thank you for using our Application.");
+                    System.exit(0);
                 default:
                     System.out.println("Enter Valid choice !");
                     break;

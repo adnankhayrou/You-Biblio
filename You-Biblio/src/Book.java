@@ -1,5 +1,7 @@
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 public class Book {
     Connection con;
@@ -18,7 +20,6 @@ public class Book {
     }
 
     public Book() {
-
 
     }
 
@@ -84,7 +85,27 @@ public class Book {
     }
     //show all books
     public void allBooks(){
+        //System.out.println("test");
+        con = DbConnection.createDbConnection();
+        String query="select * from book";
+        System.out.println("Books Details : ");
+        System.out.format("%s\t%s\t%s\t%s\t%s\t%s\n","ID","Title","Author","Isbn","Quantity","Status");
+        try {
+            Statement stmt=con.createStatement();
+            ResultSet data= stmt.executeQuery(query);
+            while (data.next()){
+                System.out.format("%s\t%s\t%s\t%s\t%d\t%s\n",
+                        data.getString(1),
+                        data.getString(2),
+                        data.getString(3),
+                        data.getString(4),
+                        data.getInt(5),
+                        data.getString(6));
 
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
     //show book based on title or author
     public void showBook(){
