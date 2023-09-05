@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class youBiblio {
 
     public static void main(String[] args){
+        Book bk = new Book();
         System.out.println("welcome to YouBiblio application");
 
         Scanner sc=new Scanner(System.in);
@@ -20,15 +21,30 @@ public class youBiblio {
             int ch=sc.nextInt();
             switch (ch){
                 case 1:
-                    System.out.println("good");
+                    System.out.println("Enter Title : ");
+                    String title=sc.next();
+                    System.out.println("Enter Author : ");
+                    String author=sc.next();
+                    System.out.println("Enter ISBN : ");
+                    String isbn=sc.next();
+                    System.out.println("Enter quantity : ");
+                    int quantity= sc.nextInt();
+                    System.out.println("Enter Status : ");
+                    String status= sc.next();
+                    bk.setTitle(title);
+                    bk.setAuthor(author);
+                    bk.setIsbn(isbn);
+                    bk.setQuantity(quantity);
+                    bk.setStatus(status);
+                    bk.addBook();
                     break;
                 default:
                     System.out.println("Enter Valid choice !");
                     break;
             }
         }while (true);
-        /*Connection connection = DbConnection.createDbConnection();
 
+        /*Connection connection = DbConnection.createDbConnection();
         if (connection != null) {
             try {
                 // Create a statement

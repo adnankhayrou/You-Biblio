@@ -2,6 +2,9 @@ public class User {
     private String name;
     private String memberNumber;
 
+    public User() {
+    }
+
     public User(String name, String memberNumber) {
         this.name = name;
         this.memberNumber = memberNumber;
@@ -16,10 +19,18 @@ public class User {
     }
 
     public String getMemberNumber(){
+
         return memberNumber;
     }
 
     public void setMemberNumber(String memberNumber){
+
         this.memberNumber = memberNumber;
     }
+
+    //New User
+    public void newUSer(){
+
+    }
+
 }
