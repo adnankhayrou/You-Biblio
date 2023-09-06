@@ -39,9 +39,21 @@ public class youBiblio {
                     bk.addBook();
                     break;
                 case 2:
-                    bk.allBooks();
+                    bk.showAllBooks();
                     break;
-                case 8:
+                case 3:
+                    System.out.print("Enter Book Title or Book Author : ");
+                    String searchInput = sc.next();
+                    bk.bookSearchWithTitleOrAuthor(searchInput);
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    System.out.print("Enter Book ISBN : ");
+                    String bookIsbn = sc.next();
+                    bk.deleteBookWithISBN(bookIsbn);
+                    break;
+                case 0:
                     System.out.println("Thank you for using our Application.");
                     System.exit(0);
                 default:
