@@ -1,13 +1,8 @@
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLOutput;
-import java.sql.Statement;
 import java.util.Scanner;
 
 public class youBiblio {
 
     public static void main(String[] args){
-        boolean check = false;
         String bookIsbn;
 
         BookController bookController = new BookController();
@@ -24,7 +19,7 @@ public class youBiblio {
             System.out.println("Enter your choice : ");
 
             int ch=sc.nextInt();
-            
+
             switch (ch){
                 case 1:
                     System.out.println("Enter Title : ");
@@ -56,19 +51,17 @@ public class youBiblio {
                     break;
                 case 4:
                     // update a book
-                    System.out.print("Enter the ISBN to find your Book : ");
+                    System.out.print("Enter the ISBN to find your Book : \n");
                     bookIsbn = sc.next();
                     // check if the book exists
-                     check = bookController.checkBookExists(bookIsbn);
-                    if(check != true){
-                        System.out.println("Book does not exist.");
+                    boolean check = bookController.checkBookExists(bookIsbn);
+                    if(!check){
+                        System.out.println("\nBook does not exist.\n");
                     }else {
                         System.out.print("Enter the new title of the book: ");
                         String titleUpdate = sc.next();
                         System.out.print("\nEnter the new author of the book: ");
                         String authorUpdate = sc.next();
-                        //System.out.print("\nEnter the new isbn of the book: ");
-                        //String isbnUpdate = sc.next();
                         System.out.print("\nEnter the new status of the book: ");
                         String statusUpdate = sc.next();
 
@@ -90,35 +83,9 @@ public class youBiblio {
                     System.out.println("Thank you for using our Application.");
                     System.exit(0);
                 default:
-                    System.out.println("Enter Valid choice !");
+                    System.out.println("Enter Valid Choice !");
                     break;
             }
         }while (true);
-
-        /*Connection connection = DbConnection.createDbConnection();
-        if (connection != null) {
-            try {
-                // Create a statement
-                Statement statement = connection.createStatement();
-
-                // Execute a sample SQL query
-                ResultSet resultSet = ((java.sql.Statement) statement).executeQuery("SELECT 'Database connection is working!' AS message");
-
-                // Display the result
-                if (resultSet.next()) {
-                    String message = resultSet.getString("message");
-                    System.out.println(message);
-                }
-
-                // Close the statement and connection
-                resultSet.close();
-                ((java.sql.Statement) statement).close();
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            System.out.println("Failed to establish a database connection.");
-        }*/
     }
 }

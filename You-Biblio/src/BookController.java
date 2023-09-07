@@ -27,7 +27,6 @@ public class BookController {
     }
     //show all books
     public void showAllBooks(){
-        //System.out.println("test");
         con = DbConnection.createDbConnection();
         if (con != null) {
             String query = "select * from book";
@@ -38,7 +37,7 @@ public class BookController {
                 ResultSet data = stmt.executeQuery(query);
                 while (data.next()) {
                     System.out.format("%s\t%s\t%s\t%s\t%d\t%s\n",
-                            data.getString(1),
+                            data.getInt(1),
                             data.getString(2),
                             data.getString(3),
                             data.getString(4),

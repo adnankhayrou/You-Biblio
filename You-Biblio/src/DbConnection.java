@@ -8,7 +8,6 @@ public class DbConnection {
         try {
             // Load connection
             Class.forName("com.mysql.cj.jdbc.Driver");
-
             // Get connection
             String url = "jdbc:mysql://localhost:3306/you-biblio";
             String username = "root";
