@@ -3,80 +3,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class Book {
+public class BookController {
     Connection con;
-    private String title;
-    private String author;
-    private String isbn;
-    private int quantity;
-    private String status;
-
-    public Book(String title, String author, String isbn, int quantity, String status) {
-        this.title = title;
-        this.author = author;
-        this.isbn = isbn;
-        this.quantity = quantity;
-        this.status = status;
-    }
-
-    public Book() {
-
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-
-    //add book
-    /*public void addBook(){
+    public void addBook(Book newBook){
         con = DbConnection.createDbConnection();
         if (con != null) {
             String query = "insert into book(title,author,isbn,quantity,status) values(?,?,?,?,?)";
 
             try {
                 PreparedStatement pstm = con.prepareStatement(query);
-                pstm.setString(1, getTitle());
-                pstm.setString(2, getAuthor());
-                pstm.setString(3, getIsbn());
-                pstm.setInt(4, getQuantity());
-                pstm.setString(5, getStatus());
+                pstm.setString(1, newBook.getTitle());
+                pstm.setString(2, newBook.getAuthor());
+                pstm.setString(3, newBook.getIsbn());
+                pstm.setInt(4, newBook.getQuantity());
+                pstm.setString(5, newBook.getStatus());
                 int cnt = pstm.executeUpdate();
                 if (cnt != 0)
                     System.out.println("Book Inserted successfully.");
@@ -168,17 +108,16 @@ public class Book {
         return true;
     }
 
-    public void updateBook(String isbn) {
+    public void updateBook(Book updateBook) {
         con = DbConnection.createDbConnection();
         if (con != null) {
-            String query = "UPDATE `book` SET `title`=?, `author`=?, `status`=?, `isbn`=? WHERE `isbn`=? ";
+            String query = "UPDATE `book` SET `title`=?, `author`=?, `status`=? WHERE `isbn`=? ";
             try {
                 PreparedStatement preparedStatement = con.prepareStatement(query);
-                preparedStatement.setString(1, getTitle());
-                preparedStatement.setString(2, getAuthor());
-                preparedStatement.setString(3, getStatus());
-                preparedStatement.setString(4, getIsbn());
-                preparedStatement.setString(5, isbn);
+                preparedStatement.setString(1, updateBook.getTitle());
+                preparedStatement.setString(2, updateBook.getAuthor());
+                preparedStatement.setString(3, updateBook.getStatus());
+                preparedStatement.setString(4, updateBook.getIsbn());
 
 
                 int count = preparedStatement.executeUpdate();
@@ -207,10 +146,10 @@ public class Book {
                     System.out.println("Book Deleted successfully.");
                 }else {
                     System.out.println("No book found with this ISBN : " + bookIsbn + "!");
-            }
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-    }*/
+    }
 }

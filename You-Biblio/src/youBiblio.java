@@ -9,10 +9,12 @@ public class youBiblio {
     public static void main(String[] args){
         boolean check = false;
         String bookIsbn;
-        Book bk = new Book();
-        System.out.println("welcome to YouBiblio application");
 
+        BookController bookController = new BookController();
+
+        System.out.println("welcome to YouBiblio application : \n");
         Scanner sc=new Scanner(System.in);
+
         do {
             System.out.println("1. Add Book\n"+
                     "2. Show All Books\n"+
@@ -20,7 +22,9 @@ public class youBiblio {
                     "4. Update Book\n"+
                     "5. Delete Book\n");
             System.out.println("Enter your choice : ");
+
             int ch=sc.nextInt();
+            
             switch (ch){
                 case 1:
                     System.out.println("Enter Title : ");
@@ -33,27 +37,29 @@ public class youBiblio {
                     int quantity= sc.nextInt();
                     System.out.println("Enter Status : ");
                     String status= sc.next();
-                    bk.setTitle(title);
-                    bk.setAuthor(author);
-                    bk.setIsbn(isbn);
-                    bk.setQuantity(quantity);
-                    bk.setStatus(status);
-                    bk.addBook();
+
+                    Book newbook = new Book();
+                    newbook.setTitle(title);
+                    newbook.setAuthor(author);
+                    newbook.setIsbn(isbn);
+                    newbook.setQuantity(quantity);
+                    newbook.setStatus(status);
+                    bookController.addBook(newbook);
                     break;
                 case 2:
-                    bk.showAllBooks();
+                    bookController.showAllBooks();
                     break;
                 case 3:
                     System.out.print("Enter Book Title or Book Author : ");
                     String searchInput = sc.next();
-                    bk.bookSearchWithTitleOrAuthor(searchInput);
+                    bookController.bookSearchWithTitleOrAuthor(searchInput);
                     break;
                 case 4:
                     // update a book
                     System.out.print("Enter the ISBN to find your Book : ");
                     bookIsbn = sc.next();
                     // check if the book exists
-                     check = bk.checkBookExists(bookIsbn);
+                     check = bookController.checkBookExists(bookIsbn);
                     if(check != true){
                         System.out.println("Book does not exist.");
                     }else {
@@ -61,8 +67,8 @@ public class youBiblio {
                         String titleUpdate = sc.next();
                         System.out.print("\nEnter the new author of the book: ");
                         String authorUpdate = sc.next();
-                        System.out.print("\nEnter the new isbn of the book: ");
-                        String isbnUpdate = sc.next();
+                        //System.out.print("\nEnter the new isbn of the book: ");
+                        //String isbnUpdate = sc.next();
                         System.out.print("\nEnter the new status of the book: ");
                         String statusUpdate = sc.next();
 
@@ -70,15 +76,15 @@ public class youBiblio {
                         Book updateBook = new Book();
                         updateBook.setTitle(titleUpdate);
                         updateBook.setAuthor(authorUpdate);
-                        updateBook.setIsbn(isbnUpdate);
+                        updateBook.setIsbn(bookIsbn);
                         updateBook.setStatus(statusUpdate);
-                        updateBook.updateBook(bookIsbn);
+                        bookController.updateBook(updateBook);
                     }
                     break;
                 case 5:
                     System.out.print("Enter Book ISBN : ");
                     bookIsbn = sc.next();
-                    bk.deleteBookWithISBN(bookIsbn);
+                    bookController.deleteBookWithISBN(bookIsbn);
                     break;
                 case 0:
                     System.out.println("Thank you for using our Application.");
