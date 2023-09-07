@@ -7,6 +7,8 @@ import java.util.Scanner;
 public class youBiblio {
 
     public static void main(String[] args){
+        boolean check = false;
+        String bookIsbn;
         Book bk = new Book();
         System.out.println("welcome to YouBiblio application");
 
@@ -47,10 +49,35 @@ public class youBiblio {
                     bk.bookSearchWithTitleOrAuthor(searchInput);
                     break;
                 case 4:
+                    // update a book
+                    System.out.print("Enter the ISBN to find your Book : ");
+                    bookIsbn = sc.next();
+                    // check if the book exists
+                     check = bk.checkBookExists(bookIsbn);
+                    if(check != true){
+                        System.out.println("Book does not exist.");
+                    }else {
+                        System.out.print("Enter the new title of the book: ");
+                        String titleUpdate = sc.next();
+                        System.out.print("\nEnter the new author of the book: ");
+                        String authorUpdate = sc.next();
+                        System.out.print("\nEnter the new isbn of the book: ");
+                        String isbnUpdate = sc.next();
+                        System.out.print("\nEnter the new status of the book: ");
+                        String statusUpdate = sc.next();
+
+
+                        Book updateBook = new Book();
+                        updateBook.setTitle(titleUpdate);
+                        updateBook.setAuthor(authorUpdate);
+                        updateBook.setIsbn(isbnUpdate);
+                        updateBook.setStatus(statusUpdate);
+                        updateBook.updateBook(bookIsbn);
+                    }
                     break;
                 case 5:
                     System.out.print("Enter Book ISBN : ");
-                    String bookIsbn = sc.next();
+                    bookIsbn = sc.next();
                     bk.deleteBookWithISBN(bookIsbn);
                     break;
                 case 0:

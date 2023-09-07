@@ -148,7 +148,51 @@ public class Book {
     public void updateBook(){
 
     }
-    
+    // check if book exists
+    public boolean checkBookExists(String isbn) {
+        con = DbConnection.createDbConnection();
+        if (con != null) {
+            String query = "select * from book where isbn = ? ";
+            try {
+                PreparedStatement pstm = con.prepareStatement(query);
+                pstm.setString(1, isbn);
+                ResultSet result = pstm.executeQuery();
+                if (!result.isBeforeFirst()){
+                    return false;
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return true;
+    }
+
+    public void updateBook(String isbn) {
+        con = DbConnection.createDbConnection();
+        if (con != null) {
+            String query = "UPDATE `book` SET `title`=?, `author`=?, `status`=?, `isbn`=? WHERE `isbn`=? ";
+            try {
+                PreparedStatement preparedStatement = con.prepareStatement(query);
+                preparedStatement.setString(1, getTitle());
+                preparedStatement.setString(2, getAuthor());
+                preparedStatement.setString(3, getStatus());
+                preparedStatement.setString(4, getIsbn());
+                preparedStatement.setString(5, isbn);
+
+
+                int count = preparedStatement.executeUpdate();
+                if (count != 0) {
+                    System.out.println("Book Updated Successfully");
+                } else {
+                    System.out.println("Something went wrong");
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
     //delete book
     public void deleteBookWithISBN(String bookIsbn){
         con = DbConnection.createDbConnection();
