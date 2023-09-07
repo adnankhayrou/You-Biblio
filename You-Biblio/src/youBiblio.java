@@ -1,3 +1,4 @@
+import java.util.Date;
 import java.util.Scanner;
 
 public class youBiblio {
@@ -39,6 +40,7 @@ public class youBiblio {
                     newbook.setIsbn(isbn);
                     newbook.setQuantity(quantity);
                     newbook.setStatus(status);
+                    newbook.setCreatedAt(new Date());
                     bookController.addBook(newbook);
                     break;
                 case 2:
@@ -71,6 +73,7 @@ public class youBiblio {
                         updateBook.setAuthor(authorUpdate);
                         updateBook.setIsbn(bookIsbn);
                         updateBook.setStatus(statusUpdate);
+                        updateBook.setUpdatedAt(new Date());
                         bookController.updateBook(updateBook);
                     }
                     break;
@@ -78,6 +81,14 @@ public class youBiblio {
                     System.out.print("Enter Book ISBN : ");
                     bookIsbn = sc.next();
                     bookController.deleteBookWithISBN(bookIsbn);
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
+                case 8:
+                    break;
+                case 9:
                     break;
                 case 0:
                     System.out.println("Thank you for using our Application.");

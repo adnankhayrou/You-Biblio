@@ -1,4 +1,5 @@
 import java.sql.Connection;
+import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -10,13 +11,17 @@ public class Book {
     private String isbn;
     private int quantity;
     private String status;
+    private Date createdAt;
+    private Date updatedAt;
 
-    public Book(String title, String author, String isbn, int quantity, String status) {
+    public Book(String title, String author, String isbn, int quantity, String status, Date createdAt, Date updatedAt) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
         this.quantity = quantity;
         this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     public Book() {
@@ -43,6 +48,14 @@ public class Book {
         this.status = status;
     }
 
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -61,6 +74,14 @@ public class Book {
 
     public String getStatus() {
         return status;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
     }
 
 

@@ -8,7 +8,7 @@ public class BookController {
     public void addBook(Book newBook){
         con = DbConnection.createDbConnection();
         if (con != null) {
-            String query = "insert into book(title,author,isbn,quantity,status) values(?,?,?,?,?)";
+            String query = "insert into book(title,author,isbn,quantity,status,created_at) values(?,?,?,?,?,?)";
 
             try {
                 PreparedStatement pstm = con.prepareStatement(query);
@@ -17,6 +17,12 @@ public class BookController {
                 pstm.setString(3, newBook.getIsbn());
                 pstm.setInt(4, newBook.getQuantity());
                 pstm.setString(5, newBook.getStatus());
+
+                // Set the created_at timestamp to the current time
+
+                java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
+                pstm.setTimestamp(6, currentTimestamp);
+
                 int cnt = pstm.executeUpdate();
                 if (cnt != 0)
                     System.out.println("Book Inserted successfully.");
@@ -110,13 +116,18 @@ public class BookController {
     public void updateBook(Book updateBook) {
         con = DbConnection.createDbConnection();
         if (con != null) {
-            String query = "UPDATE `book` SET `title`=?, `author`=?, `status`=? WHERE `isbn`=? ";
+            String query = "UPDATE `book` SET `title`=?, `author`=?, `status`=?, `updated_at`=? WHERE `isbn`=? ";
             try {
                 PreparedStatement preparedStatement = con.prepareStatement(query);
                 preparedStatement.setString(1, updateBook.getTitle());
                 preparedStatement.setString(2, updateBook.getAuthor());
                 preparedStatement.setString(3, updateBook.getStatus());
-                preparedStatement.setString(4, updateBook.getIsbn());
+
+                java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
+                preparedStatement.setTimestamp(4, currentTimestamp);
+
+                preparedStatement.setString(5, updateBook.getIsbn());
+
 
 
                 int count = preparedStatement.executeUpdate();
