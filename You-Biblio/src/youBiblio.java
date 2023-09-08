@@ -16,7 +16,8 @@ public class youBiblio {
                     "2. Show All Books\n"+
                     "3. Search For a Book\n"+
                     "4. Update Book\n"+
-                    "5. Delete Book\n");
+                    "5. Delete Book\n"+
+                    "6. Borrow a Book\n");
             System.out.println("Enter your choice : ");
 
             int ch=sc.nextInt();
@@ -83,6 +84,10 @@ public class youBiblio {
                     bookController.deleteBookWithISBN(bookIsbn);
                     break;
                 case 6:
+                    System.out.print("Enter Book ISBN : ");
+                    bookIsbn = sc.next();
+                    BorrowController borrowBook = new BorrowController();
+                    borrowBook.borrowBook(bookIsbn);
                     break;
                 case 7:
                     break;

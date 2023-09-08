@@ -1,8 +1,11 @@
+import java.util.Scanner;
+
 public class Borrows {
     public int userId;
     public int bookId;
     public String date;
     public String status;
+
 
     public Borrows() {
     }
@@ -14,13 +17,4 @@ public class Borrows {
         this.status = status;
     }
 
-    //New borrow
-    public void newBorrow(){
-
-    }
-
-    //Update Borrow
-    public void updateBorrow(){
-
-    }
 }
