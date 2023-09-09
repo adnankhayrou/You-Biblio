@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Date;
 import java.util.Scanner;
+import java.sql.SQLException;
 
 public class BorrowController {
     Connection con;
@@ -35,18 +36,53 @@ public class BorrowController {
             creatUser.newUser(newUser);
 
             //System.out.println(newUser.getId());
+            int userID = newUser.getId();
+            int bookId = getBookId(isbn);
+            //System.out.println(id);
+            Borrows newBorrow = new Borrows();
+                newBorrow.setBookId(bookId);
+                newBorrow.setUserId(userID);
+                newBorrow.setStatus("Borrowed");
 
-            //String query = "SELECT * FROM book WHERE isbn = ? AND status = 'available'";
-            //PreparedStatement pstm = con.prepareStatement(query);
-            //pstm.setString(1, isbn);
-            //ResultSet result = pstm.executeQuery();
+                String query = "insert into borrows(user_id,book_id,date,status) values(?,?,?,?)";
+                PreparedStatement pstm = con.prepareStatement(query);
+                pstm.setInt(1, newBorrow.getUserId());
+                pstm.setInt(2, newBorrow.getBookId());
+                java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
+                pstm.setTimestamp(3, currentTimestamp);
+                pstm.setString(4, newBorrow.getStatus());
 
-            System.out.println("test");
+                int cnt = pstm.executeUpdate();
+                if (cnt != 0)
+                System.out.println("Book Borrowed successfully.");
 
             }catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+    }
+
+    public int getBookId(String isbn) {
+        con = DbConnection.createDbConnection();
+        if (con != null) {
+            String query = "SELECT id FROM book WHERE isbn = ? AND status = 'available'";
+            try {
+                PreparedStatement stmt = con.prepareStatement(query);
+                stmt.setString(1, isbn);
+                ResultSet data = stmt.executeQuery();
+
+                if (data.next()) {
+                    //System.out.println(data.getString("id"));
+                    return data.getInt("id");
+                }else {
+                    System.out.println("The Book is Not Available");
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return -1;
     }
 
     //Return Book

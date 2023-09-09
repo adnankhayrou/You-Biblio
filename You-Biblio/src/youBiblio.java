@@ -59,7 +59,7 @@ public class youBiblio {
                     // check if the book exists
                     boolean check = bookController.checkBookExists(bookIsbn);
                     if(!check){
-                        System.out.println("\nBook does not exist.\n");
+                        System.out.println("\nThe Book is Not Available.\n");
                     }else {
                         System.out.print("Enter the new title of the book: ");
                         String titleUpdate = sc.next();

@@ -97,7 +97,7 @@ public class BookController {
     public boolean checkBookExists(String isbn) {
         con = DbConnection.createDbConnection();
         if (con != null) {
-            String query = "select * from book where isbn = ? ";
+            String query = "select * from book where isbn = ? AND status = 'available'";
             try {
                 PreparedStatement pstm = con.prepareStatement(query);
                 pstm.setString(1, isbn);
