@@ -83,7 +83,7 @@ public class BorrowController {
             String query = "SELECT book.id AS book_id, bookcopy.id AS bookcopy_id " +
                     "FROM book " +
                     "JOIN bookcopy ON book.id = bookcopy.book_id " +
-                    "WHERE book.isbn = ? AND bookcopy.status = 'available'";
+                    "WHERE book.isbn = ? AND bookcopy.status = 'Available'";
 
             try {
                 PreparedStatement stmt = con.prepareStatement(query);
@@ -101,7 +101,6 @@ public class BorrowController {
                 ex.printStackTrace();
             }
         }
-
         return ids;
     }
 
@@ -231,6 +230,33 @@ public class BorrowController {
                 pstm.setInt(1, bookCopyId);
                 pstm.executeUpdate();
 
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+
+    public void showBorrowedBooks(){
+        con = DbConnection.createDbConnection();
+        if (con != null) {
+            String query = "SELECT book.title, user.first_name, user.member_number, borrows.date " +
+                    "FROM borrows " +
+                    "JOIN book ON borrows.book_id = book.id " +
+                    "JOIN user ON borrows.user_id = user.id";
+            System.out.println("Books Details : ");
+            System.out.format("%s\t%s\t%s\t%s\n", "Book", "Member Name", "Member Number", "Date");
+            try {
+                Statement stmt = con.createStatement();
+                ResultSet data = stmt.executeQuery(query);
+                while (data.next()) {
+                    System.out.format("%s\t%s\t%s\t%tF\n",
+                            data.getString("title"),
+                            data.getString("first_name"),
+                            data.getString("member_number"),
+                            data.getDate("date"));
+
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

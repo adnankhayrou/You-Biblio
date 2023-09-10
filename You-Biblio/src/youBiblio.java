@@ -25,9 +25,9 @@ public class youBiblio {
                     "0. Exit Application\n");
             System.out.println("Enter your choice : ");
 
-            int ch=sc.nextInt();
+            int choice=sc.nextInt();
 
-            switch (ch){
+            switch (choice){
                 case 1:
                     System.out.println("Enter Title : ");
                     String title=sc.next();
@@ -93,6 +93,7 @@ public class youBiblio {
                     borrowBook.returnBook(bookIsbn);
                     break;
                 case 8:
+                    borrowBook.showBorrowedBooks();
                     break;
                 case 9:
                     break;
