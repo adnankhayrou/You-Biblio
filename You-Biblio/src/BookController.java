@@ -8,7 +8,7 @@ public class BookController {
     public void addBook(Book newBook){
         con = DbConnection.createDbConnection();
         if (con != null) {
-            String query = "insert into book(title,author,isbn,quantity,status,created_at) values(?,?,?,?,?,?)";
+            String query = "insert into book(title,author,isbn,quantity,created_at) values(?,?,?,?,?)";
 
             try {
                 PreparedStatement pstm = con.prepareStatement(query);
@@ -16,12 +16,11 @@ public class BookController {
                 pstm.setString(2, newBook.getAuthor());
                 pstm.setString(3, newBook.getIsbn());
                 pstm.setInt(4, newBook.getQuantity());
-                pstm.setString(5, newBook.getStatus());
 
                 // Set the created_at timestamp to the current time
 
                 java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
-                pstm.setTimestamp(6, currentTimestamp);
+                pstm.setTimestamp(5, currentTimestamp);
 
                 int cnt = pstm.executeUpdate();
                 if (cnt != 0)
@@ -42,13 +41,18 @@ public class BookController {
                 Statement stmt = con.createStatement();
                 ResultSet data = stmt.executeQuery(query);
                 while (data.next()) {
-                    System.out.format("%s\t%s\t%s\t%s\t%d\t%s\n",
-                            data.getInt(1),
-                            data.getString(2),
-                            data.getString(3),
-                            data.getString(4),
-                            data.getInt(5),
-                            data.getString(6));
+                    System.out.format("%d\t%s\t%s\t%s\t%d\t",
+                    data.getInt(1),
+                    data.getString(2),
+                    data.getString(3),
+                    data.getString(4),
+                    data.getInt(5));
+                    int count = data.getInt(5);
+                    if (count >= 1){
+                        System.out.println("Available\n");
+                    }else {
+                        System.out.println("Not Available");
+                    }
 
                 }
             } catch (Exception ex) {
@@ -97,7 +101,7 @@ public class BookController {
     public boolean checkBookExists(String isbn) {
         con = DbConnection.createDbConnection();
         if (con != null) {
-            String query = "select * from book where isbn = ? AND status = 'available'";
+            String query = "select * from book where isbn = ? AND quantity >= 1";
             try {
                 PreparedStatement pstm = con.prepareStatement(query);
                 pstm.setString(1, isbn);
@@ -116,17 +120,16 @@ public class BookController {
     public void updateBook(Book updateBook) {
         con = DbConnection.createDbConnection();
         if (con != null) {
-            String query = "UPDATE `book` SET `title`=?, `author`=?, `status`=?, `updated_at`=? WHERE `isbn`=? ";
+            String query = "UPDATE `book` SET `title`=?, `author`=?, `updated_at`=? WHERE `isbn`=? ";
             try {
                 PreparedStatement preparedStatement = con.prepareStatement(query);
                 preparedStatement.setString(1, updateBook.getTitle());
                 preparedStatement.setString(2, updateBook.getAuthor());
-                preparedStatement.setString(3, updateBook.getStatus());
 
                 java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
-                preparedStatement.setTimestamp(4, currentTimestamp);
+                preparedStatement.setTimestamp(3, currentTimestamp);
 
-                preparedStatement.setString(5, updateBook.getIsbn());
+                preparedStatement.setString(4, updateBook.getIsbn());
 
 
 

@@ -46,22 +46,19 @@ public class BorrowController {
                 newBorrow.setBookId(bookId);
                 newBorrow.setBookCopyId(bookCopyId);
                 newBorrow.setUserId(userID);
-                newBorrow.setStatus("Borrowed");
 
                 // Check if the user has already borrowed the book
                 if (hasUserBorrowedBook(userID, bookId)) {
                     newBorrow.setBookId(bookId);
                     newBorrow.setUserId(userID);
-                    newBorrow.setStatus("Borrowed");
 
-                    String query = "INSERT INTO borrows(user_id, book_id, book_copy_id, date, status) VALUES (?, ?, ?, ?, ?)";
+                    String query = "INSERT INTO borrows(user_id, book_id, book_copy_id, date) VALUES (?, ?, ?, ?)";
                     PreparedStatement pstm = con.prepareStatement(query);
                     pstm.setInt(1, newBorrow.getUserId());
                     pstm.setInt(2, newBorrow.getBookId());
                     pstm.setInt(3, newBorrow.getBookCopyId());
                     java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
                     pstm.setTimestamp(4, currentTimestamp);
-                    pstm.setString(5, newBorrow.getStatus());
 
                     int cnt = pstm.executeUpdate();
                     if (cnt != 0) {
@@ -70,7 +67,7 @@ public class BorrowController {
                 } else {
                     System.out.println("User has already borrowed this book.");
                 }
-                updateBookCopyStqtus(bookCopyId);
+                updateBookCopyStatus(bookCopyId);
 
             }catch (Exception ex) {
                 ex.printStackTrace();
@@ -108,23 +105,17 @@ public class BorrowController {
         return ids;
     }
 
-    public void updateBookCopyStqtus(int BookCopyId) {
+    public void updateBookCopyStatus(int BookCopyId) {
         con = DbConnection.createDbConnection();
         if (con != null) {
-            String query = "UPDATE `bookcopy` SET `status`=? WHERE `id`=? ";
+            String query = "UPDATE `bookcopy` SET `status`=? WHERE `id`=? AND `status` = 'Available' ORDER BY `id`";
             try {
+
                 PreparedStatement preparedStatement = con.prepareStatement(query);
                 preparedStatement.setString(1, "Borrowed");
                 preparedStatement.setInt(2, BookCopyId);
+                preparedStatement.executeUpdate();
 
-
-
-                int count = preparedStatement.executeUpdate();
-                //if (count != 0) {
-                    //System.out.println("Book Updated Successfully");
-                //} else {
-                    //System.out.println("Something went wrong");
-                //}
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -163,21 +154,13 @@ public class BorrowController {
         }else {
             try {
 
-                System.out.print("Enter Member First Name : ");
-                String memberFirstName = sc.next();
-                System.out.print("Enter Member Last Name : ");
-                String memberLastName = sc.next();
                 System.out.print("Enter Member Number : ");
                 String memberNumber = sc.next();
 
-                User newUser = new User();
-                newUser.setFirstName(memberFirstName);
-                newUser.setLastName(memberLastName);
-                newUser.setMemberNumber(memberNumber);
-                newUser.setCreatedAt(new Date());
+                int bookCopyId = getBookCopyId(isbn,memberNumber);
+                ReturnBookCopy(bookCopyId);
 
-                UserController creatUser = new UserController();
-                creatUser.newUser(newUser);
+
 
 
             } catch (Exception ex) {
@@ -185,6 +168,73 @@ public class BorrowController {
             }
         }
 
+    }
+
+    public int getBookCopyId(String isbn, String memberNumber) {
+        con = DbConnection.createDbConnection();
+        int id = 0;
+
+        if (con != null) {
+            String query = "SELECT borrows.book_copy_id " +
+                    "FROM borrows " +
+                    "JOIN book ON borrows.book_id = book.id " +
+                    "JOIN user ON borrows.user_id = user.id " +
+                    "WHERE book.isbn = ? AND user.member_number = ?";
+
+            try {
+                PreparedStatement stmt = con.prepareStatement(query);
+                stmt.setString(1, isbn);
+                stmt.setString(2, memberNumber);
+                ResultSet data = stmt.executeQuery();
+
+                if (data.next()) {
+                    int bookCopyId = data.getInt("book_copy_id");
+                    System.out.println(bookCopyId);
+                    id = bookCopyId;
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return id;
+    }
+
+    public void ReturnBookCopy(int BookCopyId) {
+        con = DbConnection.createDbConnection();
+        if (con != null) {
+            String query = "UPDATE `bookcopy` SET `status`=? WHERE `id`=? ";
+            try {
+
+                PreparedStatement preparedStatement = con.prepareStatement(query);
+                preparedStatement.setString(1, "Avialable");
+                preparedStatement.setInt(2, BookCopyId);
+                int count = preparedStatement.executeUpdate();
+                if (count != 0) {
+                    System.out.println("Book Returned Successfully");
+                }
+                removeTheBorrow(BookCopyId);
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public void removeTheBorrow(int bookCopyId){
+        con = DbConnection.createDbConnection();
+        if (con != null) {
+            String query = "delete from borrows where book_copy_id = ? ";
+            try {
+                PreparedStatement pstm = con.prepareStatement(query);
+                pstm.setInt(1, bookCopyId);
+                pstm.executeUpdate();
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
 }

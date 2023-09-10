@@ -7,18 +7,16 @@ public class Borrows {
 
     private int bookCopyId;
     private Date date;
-    private String status;
 
 
     public Borrows() {
     }
 
-    public Borrows(int userId, int bookId, int bookCopyId, Date date, String status) {
+    public Borrows(int userId, int bookId, int bookCopyId, Date date) {
         this.userId = userId;
         this.bookId = bookId;
         this.bookCopyId = bookCopyId;
         this.date = date;
-        this.status = status;
     }
 
     public int getUserId() {
@@ -53,11 +51,4 @@ public class Borrows {
         this.date = date;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }

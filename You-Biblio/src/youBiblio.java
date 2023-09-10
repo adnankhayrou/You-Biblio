@@ -19,7 +19,10 @@ public class youBiblio {
                     "4. Update Book\n"+
                     "5. Delete Book\n"+
                     "6. Borrow a Book\n"+
-                    "7. Return a Book\n");
+                    "7. Return a Book\n"+
+                    "8. Show Borrowed Books\n"+
+                    "9. Show Books Statistics\n"+
+                    "0. Exit Application\n");
             System.out.println("Enter your choice : ");
 
             int ch=sc.nextInt();
@@ -34,15 +37,12 @@ public class youBiblio {
                     String isbn=sc.next();
                     System.out.println("Enter quantity : ");
                     int quantity= sc.nextInt();
-                    System.out.println("Enter Status : ");
-                    String status= sc.next();
 
                     Book newbook = new Book();
                     newbook.setTitle(title);
                     newbook.setAuthor(author);
                     newbook.setIsbn(isbn);
                     newbook.setQuantity(quantity);
-                    newbook.setStatus(status);
                     newbook.setCreatedAt(new Date());
                     bookController.addBook(newbook);
                     break;
@@ -67,15 +67,12 @@ public class youBiblio {
                         String titleUpdate = sc.next();
                         System.out.print("\nEnter the new author of the book: ");
                         String authorUpdate = sc.next();
-                        System.out.print("\nEnter the new status of the book: ");
-                        String statusUpdate = sc.next();
 
 
                         Book updateBook = new Book();
                         updateBook.setTitle(titleUpdate);
                         updateBook.setAuthor(authorUpdate);
                         updateBook.setIsbn(bookIsbn);
-                        updateBook.setStatus(statusUpdate);
                         updateBook.setUpdatedAt(new Date());
                         bookController.updateBook(updateBook);
                     }
