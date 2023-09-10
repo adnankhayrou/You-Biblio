@@ -4,6 +4,8 @@ import java.util.Scanner;
 public class Borrows {
     private int userId;
     private int bookId;
+
+    private int bookCopyId;
     private Date date;
     private String status;
 
@@ -11,15 +13,24 @@ public class Borrows {
     public Borrows() {
     }
 
-    public Borrows(int userId, int bookId, Date date, String status) {
+    public Borrows(int userId, int bookId, int bookCopyId, Date date, String status) {
         this.userId = userId;
         this.bookId = bookId;
+        this.bookCopyId = bookCopyId;
         this.date = date;
         this.status = status;
     }
 
     public int getUserId() {
         return userId;
+    }
+
+    public int getBookCopyId() {
+        return bookCopyId;
+    }
+
+    public void setBookCopyId(int bookCopyId) {
+        this.bookCopyId = bookCopyId;
     }
 
     public void setUserId(int userId) {

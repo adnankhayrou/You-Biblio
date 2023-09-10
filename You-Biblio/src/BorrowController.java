@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Date;
 import java.util.Scanner;
-import java.sql.SQLException;
 
 public class BorrowController {
     Connection con;
@@ -38,10 +37,14 @@ public class BorrowController {
 
             //System.out.println(newUser.getId());
             int userID = newUser.getId();
-            int bookId = getBookId(isbn);
+            //int bookId = getBookId(isbn);
+                int[] result = getBookAndBookCopyId(isbn);
+                int bookId = result[0];
+                int bookCopyId = result[1];
             //System.out.println(id);
             Borrows newBorrow = new Borrows();
                 newBorrow.setBookId(bookId);
+                newBorrow.setBookCopyId(bookCopyId);
                 newBorrow.setUserId(userID);
                 newBorrow.setStatus("Borrowed");
 
@@ -51,13 +54,14 @@ public class BorrowController {
                     newBorrow.setUserId(userID);
                     newBorrow.setStatus("Borrowed");
 
-                    String query = "INSERT INTO borrows(user_id, book_id, date, status) VALUES (?, ?, ?, ?)";
+                    String query = "INSERT INTO borrows(user_id, book_id, book_copy_id, date, status) VALUES (?, ?, ?, ?, ?)";
                     PreparedStatement pstm = con.prepareStatement(query);
                     pstm.setInt(1, newBorrow.getUserId());
                     pstm.setInt(2, newBorrow.getBookId());
+                    pstm.setInt(3, newBorrow.getBookCopyId());
                     java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
-                    pstm.setTimestamp(3, currentTimestamp);
-                    pstm.setString(4, newBorrow.getStatus());
+                    pstm.setTimestamp(4, currentTimestamp);
+                    pstm.setString(5, newBorrow.getStatus());
 
                     int cnt = pstm.executeUpdate();
                     if (cnt != 0) {
@@ -66,6 +70,7 @@ public class BorrowController {
                 } else {
                     System.out.println("User has already borrowed this book.");
                 }
+                updateBookCopyStqtus(bookCopyId);
 
             }catch (Exception ex) {
                 ex.printStackTrace();
@@ -73,19 +78,25 @@ public class BorrowController {
         }
     }
 
-    public int getBookId(String isbn) {
+    public int[] getBookAndBookCopyId(String isbn) {
         con = DbConnection.createDbConnection();
+        int[] ids = new int[2]; //array to push (book ID and book copy ID)
+
         if (con != null) {
-            String query = "SELECT id FROM book WHERE isbn = ? AND status = 'available'";
+            String query = "SELECT book.id AS book_id, bookcopy.id AS bookcopy_id " +
+                    "FROM book " +
+                    "JOIN bookcopy ON book.id = bookcopy.book_id " +
+                    "WHERE book.isbn = ? AND bookcopy.status = 'available'";
+
             try {
                 PreparedStatement stmt = con.prepareStatement(query);
                 stmt.setString(1, isbn);
                 ResultSet data = stmt.executeQuery();
 
                 if (data.next()) {
-                    //System.out.println(data.getString("id"));
-                    return data.getInt("id");
-                }else {
+                    ids[0] = data.getInt("book_id");
+                    ids[1] = data.getInt("bookcopy_id");
+                } else {
                     System.out.println("The Book is Not Available");
                 }
 
@@ -93,7 +104,31 @@ public class BorrowController {
                 ex.printStackTrace();
             }
         }
-        return -1;
+
+        return ids;
+    }
+
+    public void updateBookCopyStqtus(int BookCopyId) {
+        con = DbConnection.createDbConnection();
+        if (con != null) {
+            String query = "UPDATE `bookcopy` SET `status`=? WHERE `id`=? ";
+            try {
+                PreparedStatement preparedStatement = con.prepareStatement(query);
+                preparedStatement.setString(1, "Borrowed");
+                preparedStatement.setInt(2, BookCopyId);
+
+
+
+                int count = preparedStatement.executeUpdate();
+                //if (count != 0) {
+                    //System.out.println("Book Updated Successfully");
+                //} else {
+                    //System.out.println("Something went wrong");
+                //}
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     public boolean hasUserBorrowedBook(int userID, int bookId) {
@@ -151,4 +186,5 @@ public class BorrowController {
         }
 
     }
+
 }
