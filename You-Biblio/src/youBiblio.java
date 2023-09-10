@@ -7,6 +7,7 @@ public class youBiblio {
         String bookIsbn;
 
         BookController bookController = new BookController();
+        BorrowController borrowBook = new BorrowController();
 
         System.out.println("welcome to YouBiblio application : \n");
         Scanner sc=new Scanner(System.in);
@@ -17,7 +18,8 @@ public class youBiblio {
                     "3. Search For a Book\n"+
                     "4. Update Book\n"+
                     "5. Delete Book\n"+
-                    "6. Borrow a Book\n");
+                    "6. Borrow a Book\n"+
+                    "7. Return a Book\n");
             System.out.println("Enter your choice : ");
 
             int ch=sc.nextInt();
@@ -86,10 +88,12 @@ public class youBiblio {
                 case 6:
                     System.out.print("Enter Book ISBN : ");
                     bookIsbn = sc.next();
-                    BorrowController borrowBook = new BorrowController();
                     borrowBook.borrowBook(bookIsbn);
                     break;
                 case 7:
+                    System.out.print("Enter Book ISBN : ");
+                    bookIsbn = sc.next();
+                    borrowBook.returnBook(bookIsbn);
                     break;
                 case 8:
                     break;
