@@ -30,7 +30,6 @@ public class BorrowController {
             newUser.setFirstName(memberFirstName);
             newUser.setLastName(memberLastName);
             newUser.setMemberNumber(memberNumber);
-            newUser.setCreatedAt(new Date());
 
             UserController creatUser = new UserController();
             creatUser.newUser(newUser);
@@ -262,5 +261,6 @@ public class BorrowController {
             }
         }
     }
+
 
 }

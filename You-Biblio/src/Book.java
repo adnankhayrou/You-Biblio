@@ -10,16 +10,12 @@ public class Book {
     private String author;
     private String isbn;
     private int quantity;
-    private Date createdAt;
-    private Date updatedAt;
 
-    public Book(String title, String author, String isbn, int quantity, Date createdAt, Date updatedAt) {
+    public Book(String title, String author, String isbn, int quantity) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
         this.quantity = quantity;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
     public Book() {
@@ -42,15 +38,6 @@ public class Book {
         this.quantity = quantity;
     }
 
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -68,13 +55,6 @@ public class Book {
     }
 
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
 
 
 }

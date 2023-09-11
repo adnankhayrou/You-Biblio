@@ -13,16 +13,17 @@ public class youBiblio {
         Scanner sc=new Scanner(System.in);
 
         do {
-            System.out.println("1. Add Book\n"+
-                    "2. Show All Books\n"+
-                    "3. Search For a Book\n"+
-                    "4. Update Book\n"+
-                    "5. Delete Book\n"+
-                    "6. Borrow a Book\n"+
-                    "7. Return a Book\n"+
-                    "8. Show Borrowed Books\n"+
-                    "9. Show Books Statistics\n"+
-                    "0. Exit Application\n");
+            System.out.println("1.  Add Book\n"+
+                    "2.  Show All Books\n"+
+                    "3.  Search For a Book\n"+
+                    "4.  Update Book\n"+
+                    "5.  Delete Book\n"+
+                    "6.  Borrow a Book\n"+
+                    "7.  Return a Book\n"+
+                    "8.  Show Borrowed Books\n"+
+                    "9.  Show Books Statistics\n"+
+                    "10. Check For Lost Books\n"+
+                    "0.  Exit Application\n");
             System.out.println("Enter your choice : ");
 
             int choice=sc.nextInt();
@@ -43,7 +44,6 @@ public class youBiblio {
                     newbook.setAuthor(author);
                     newbook.setIsbn(isbn);
                     newbook.setQuantity(quantity);
-                    newbook.setCreatedAt(new Date());
                     bookController.addBook(newbook);
                     break;
                 case 2:
@@ -73,7 +73,6 @@ public class youBiblio {
                         updateBook.setTitle(titleUpdate);
                         updateBook.setAuthor(authorUpdate);
                         updateBook.setIsbn(bookIsbn);
-                        updateBook.setUpdatedAt(new Date());
                         bookController.updateBook(updateBook);
                     }
                     break;
@@ -96,6 +95,10 @@ public class youBiblio {
                     borrowBook.showBorrowedBooks();
                     break;
                 case 9:
+                    bookController.showBookStatistics();
+                    break;
+                case 10:
+                    bookController.checkAndMarkLostBooks();
                     break;
                 case 0:
                     System.out.println("Thank you for using our Application.");

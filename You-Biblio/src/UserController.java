@@ -29,13 +29,11 @@ public class UserController {
                     newUser.setLastName(existingLastName);
                 } else {
                     // insert a new user
-                    String insertQuery = "INSERT INTO user (first_name, last_name, member_number, created_at) VALUES (?, ?, ?, ?)";
+                    String insertQuery = "INSERT INTO user (first_name, last_name, member_number) VALUES (?, ?, ?)";
                     PreparedStatement insertStmt = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
                     insertStmt.setString(1, newUser.getFirstName());
                     insertStmt.setString(2, newUser.getLastName());
                     insertStmt.setString(3, newUser.getMemberNumber());
-                    java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
-                    insertStmt.setTimestamp(4, currentTimestamp);
 
                     int cnt = insertStmt.executeUpdate();
 

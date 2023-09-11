@@ -8,7 +8,7 @@ public class BookController {
     public void addBook(Book newBook){
         con = DbConnection.createDbConnection();
         if (con != null) {
-            String query = "insert into book(title,author,isbn,quantity,created_at) values(?,?,?,?,?)";
+            String query = "insert into book(title,author,isbn,quantity) values(?,?,?,?)";
 
             try {
                 PreparedStatement pstm = con.prepareStatement(query);
@@ -16,11 +16,6 @@ public class BookController {
                 pstm.setString(2, newBook.getAuthor());
                 pstm.setString(3, newBook.getIsbn());
                 pstm.setInt(4, newBook.getQuantity());
-
-                // Set the created_at timestamp to the current time
-
-                java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
-                pstm.setTimestamp(5, currentTimestamp);
 
                 int cnt = pstm.executeUpdate();
                 if (cnt != 0)
@@ -60,6 +55,7 @@ public class BookController {
             }
         }
     }
+
     //show book based on title or author
     public void bookSearchWithTitleOrAuthor(String word){
         con = DbConnection.createDbConnection();
@@ -117,19 +113,16 @@ public class BookController {
         return true;
     }
 
+
     public void updateBook(Book updateBook) {
         con = DbConnection.createDbConnection();
         if (con != null) {
-            String query = "UPDATE `book` SET `title`=?, `author`=?, `updated_at`=? WHERE `isbn`=? ";
+            String query = "UPDATE `book` SET `title`=?, `author`=? WHERE `isbn`=? ";
             try {
                 PreparedStatement preparedStatement = con.prepareStatement(query);
                 preparedStatement.setString(1, updateBook.getTitle());
                 preparedStatement.setString(2, updateBook.getAuthor());
-
-                java.sql.Timestamp currentTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
-                preparedStatement.setTimestamp(3, currentTimestamp);
-
-                preparedStatement.setString(4, updateBook.getIsbn());
+                preparedStatement.setString(3, updateBook.getIsbn());
 
 
 
@@ -164,5 +157,64 @@ public class BookController {
                 ex.printStackTrace();
             }
         }
+    }
+
+    public void checkAndMarkLostBooks(){
+        con = DbConnection.createDbConnection();
+        if (con != null) {
+            try {
+                String query = "SELECT id, book_copy_id FROM borrows WHERE date < DATE_SUB(NOW(), INTERVAL 1 DAY)";
+                Statement stmt = con.createStatement();
+                ResultSet result = stmt.executeQuery(query);
+
+                String updateQuery = "UPDATE bookcopy SET status = 'Lost' WHERE id = ?";
+                PreparedStatement updateStatement = con.prepareStatement(updateQuery);
+
+                while (result.next()) {
+                    int bookCopyId = result.getInt("book_copy_id");
+                    updateStatement.setInt(1, bookCopyId);
+                    updateStatement.executeUpdate();
+                    System.out.println("Book copy with ID " + bookCopyId + " marked as 'Lost'.");
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+
+    public void showBookStatistics(){
+        int available = countBooksByStatus("Available");
+        int borrowed = countBooksByStatus("Borrowed");
+        int lost = countBooksByStatus("Lost");
+
+        try {
+            System.out.println("");
+            System.out.println("Available books: " + available);
+            System.out.println("Borrowed books: " + borrowed);
+            System.out.println("Lost books: " + lost);
+            System.out.println("");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+    public int countBooksByStatus(String status){
+        con = DbConnection.createDbConnection();
+        if(con != null){
+            String query = "SELECT COUNT(*) FROM bookcopy WHERE status = ?";
+            try {
+                PreparedStatement preparedStatement = con.prepareStatement(query);
+                preparedStatement.setString(1, status);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()) {
+                    return resultSet.getInt(1);
+                }
+            }catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return 0;
     }
 }
