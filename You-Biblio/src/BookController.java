@@ -4,9 +4,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class BookController {
-    Connection con;
+    Connection con = DbConnection.createDbConnection();
     public void addBook(Book newBook){
-        con = DbConnection.createDbConnection();
         if (con != null) {
             String query = "insert into book(title,author,isbn,quantity) values(?,?,?,?)";
 
@@ -27,7 +26,6 @@ public class BookController {
     }
     //show all books
     public void showAllBooks(){
-        con = DbConnection.createDbConnection();
         if (con != null) {
             String query = "select * from book";
             System.out.println("Books Details : ");
@@ -36,7 +34,7 @@ public class BookController {
                 Statement stmt = con.createStatement();
                 ResultSet data = stmt.executeQuery(query);
                 while (data.next()) {
-                    System.out.format("%d\t%s\t%s\t%s\t%d\t",
+                    System.out.format("\n%d\t%s\t%s\t%s\t\t%d\t\t",
                     data.getInt(1),
                     data.getString(2),
                     data.getString(3),
@@ -44,9 +42,9 @@ public class BookController {
                     data.getInt(5));
                     int count = data.getInt(5);
                     if (count >= 1){
-                        System.out.println("Available\n");
+                        System.out.println("Available");
                     }else {
-                        System.out.println("Not Available");
+                        System.out.println("Not Available\n");
                     }
 
                 }
@@ -58,7 +56,6 @@ public class BookController {
 
     //show book based on title or author
     public void bookSearchWithTitleOrAuthor(String word){
-        con = DbConnection.createDbConnection();
         if (con != null) {
             String query = "select * from book where book.title LIKE ? OR book.author LIKE ? ";
             try {
@@ -95,7 +92,6 @@ public class BookController {
     }
     // check if book exists
     public boolean checkBookExists(String isbn) {
-        con = DbConnection.createDbConnection();
         if (con != null) {
             String query = "select * from book where isbn = ? AND quantity >= 1";
             try {
@@ -115,7 +111,6 @@ public class BookController {
 
 
     public void updateBook(Book updateBook) {
-        con = DbConnection.createDbConnection();
         if (con != null) {
             String query = "UPDATE `book` SET `title`=?, `author`=? WHERE `isbn`=? ";
             try {
@@ -123,8 +118,6 @@ public class BookController {
                 preparedStatement.setString(1, updateBook.getTitle());
                 preparedStatement.setString(2, updateBook.getAuthor());
                 preparedStatement.setString(3, updateBook.getIsbn());
-
-
 
                 int count = preparedStatement.executeUpdate();
                 if (count != 0) {
@@ -140,32 +133,55 @@ public class BookController {
 
     //delete book
     public void deleteBookWithISBN(String bookIsbn){
-        con = DbConnection.createDbConnection();
         if (con != null) {
+            boolean check = checkBorrowedBook(bookIsbn);
+            if (check) {
+                System.out.println("\nYou can't Delete a Borrowed Book\n");
+            }else{
             String query = "delete from book where isbn = ? ";
             try {
                 PreparedStatement pstm = con.prepareStatement(query);
                 pstm.setString(1, bookIsbn);
 
                 int cnt = pstm.executeUpdate();
-                if (cnt != 0){
-                    System.out.println("Book Deleted successfully.");
-                }else {
-                    System.out.println("No book found with this ISBN : " + bookIsbn + "!");
+                if (cnt != 0) {
+                    System.out.println("\nBook Deleted successfully.\n");
+                } else {
+                    System.out.println("\nNo book found with this ISBN : " + bookIsbn + "!\n");
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+        }
+    }
+
+    public boolean checkBorrowedBook(String isbn) {
+        if (con != null) {
+            String query = "SELECT * FROM book " +
+                    "JOIN borrows ON book.id = borrows.book_id " +
+                    "WHERE book.isbn = ?";
+            try {
+                PreparedStatement pstm = con.prepareStatement(query);
+                pstm.setString(1, isbn);
+                ResultSet result = pstm.executeQuery();
+                if (!result.isBeforeFirst()){
+                    return false;
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return true;
     }
 
     public void checkAndMarkLostBooks(){
-        con = DbConnection.createDbConnection();
         if (con != null) {
             try {
-                String query = "SELECT id, book_copy_id FROM borrows WHERE date < DATE_SUB(NOW(), INTERVAL 1 DAY)";
-                Statement stmt = con.createStatement();
-                ResultSet result = stmt.executeQuery(query);
+                String query = "SELECT id, book_copy_id FROM borrows WHERE date < DATE_SUB(NOW(), INTERVAL 5 MINUTE)";
+                PreparedStatement stmt = con.prepareStatement(query);
+                ResultSet result = stmt.executeQuery();
 
                 String updateQuery = "UPDATE bookcopy SET status = 'Lost' WHERE id = ?";
                 PreparedStatement updateStatement = con.prepareStatement(updateQuery);
@@ -174,7 +190,7 @@ public class BookController {
                     int bookCopyId = result.getInt("book_copy_id");
                     updateStatement.setInt(1, bookCopyId);
                     updateStatement.executeUpdate();
-                    System.out.println("Book copy with ID " + bookCopyId + " marked as 'Lost'.");
+                    System.out.println("\nBook copy with ID " + bookCopyId + " marked as 'Lost'.\n");
                 }
 
             } catch (Exception ex) {
@@ -200,8 +216,9 @@ public class BookController {
         }
 
     }
+
+
     public int countBooksByStatus(String status){
-        con = DbConnection.createDbConnection();
         if(con != null){
             String query = "SELECT COUNT(*) FROM bookcopy WHERE status = ?";
             try {
