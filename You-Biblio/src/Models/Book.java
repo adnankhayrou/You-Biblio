@@ -1,8 +1,6 @@
+package Models;
+
 import java.sql.Connection;
-import java.util.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
 public class Book {
     Connection con;

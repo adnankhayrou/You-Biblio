@@ -1,16 +1,22 @@
+package Controllers;
+
+import Controllers.BookController;
+import Models.Borrows;
+import Models.User;
+import database.DbConnection;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Date;
 import java.util.Scanner;
 
 public class BorrowController {
-    Connection con;
-    Scanner sc=new Scanner(System.in);
+    Connection con = DbConnection.createDbConnection();
+    Scanner sc= new Scanner(System.in);
     BookController book = new BookController();
 
-    //Borrow Book
+    //Borrow Models.Book
     public void borrowBook(String isbn){
 
         boolean check = book.checkBookExists(isbn);
@@ -32,7 +38,7 @@ public class BorrowController {
             newUser.setMemberNumber(memberNumber);
 
             UserController creatUser = new UserController();
-            creatUser.newUser(newUser);
+            creatUser.checkUser(newUser);
 
             //System.out.println(newUser.getId());
             int userID = newUser.getId();
@@ -48,8 +54,8 @@ public class BorrowController {
 
                 // Check if the user has already borrowed the book
                 if (hasUserBorrowedBook(userID, bookId)) {
-                    newBorrow.setBookId(bookId);
-                    newBorrow.setUserId(userID);
+                    //newBorrow.setBookId(bookId);
+                    //newBorrow.setUserId(userID);
 
                     String query = "INSERT INTO borrows(user_id, book_id, book_copy_id, date) VALUES (?, ?, ?, ?)";
                     PreparedStatement pstm = con.prepareStatement(query);
@@ -75,7 +81,6 @@ public class BorrowController {
     }
 
     public int[] getBookAndBookCopyId(String isbn) {
-        con = DbConnection.createDbConnection();
         int[] ids = new int[2]; //array to push (book ID and book copy ID)
 
         if (con != null) {
@@ -104,7 +109,6 @@ public class BorrowController {
     }
 
     public void updateBookCopyStatus(int BookCopyId) {
-        con = DbConnection.createDbConnection();
         if (con != null) {
             String query = "UPDATE `bookcopy` SET `status`=? WHERE `id`=? AND `status` = 'Available' ORDER BY `id`";
             try {
@@ -121,7 +125,6 @@ public class BorrowController {
     }
 
     public boolean hasUserBorrowedBook(int userID, int bookId) {
-        con = DbConnection.createDbConnection();
         if (con != null) {
             try {
                 String query = "SELECT * FROM borrows WHERE user_id = ? AND book_id = ?";
@@ -132,7 +135,6 @@ public class BorrowController {
                 ResultSet result = pstmt.executeQuery();
 
                 if (!result.isBeforeFirst()) {
-
                     return true;
                 }
             }catch (Exception ex) {
@@ -144,7 +146,7 @@ public class BorrowController {
     }
 
 
-    //Return Book
+    //Return Models.Book
     public void returnBook(String isbn){
         boolean check = book.checkBookExists(isbn);
         if(!check){
@@ -158,9 +160,6 @@ public class BorrowController {
                 int bookCopyId = getBookCopyId(isbn,memberNumber);
                 ReturnBookCopy(bookCopyId);
 
-
-
-
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -169,9 +168,7 @@ public class BorrowController {
     }
 
     public int getBookCopyId(String isbn, String memberNumber) {
-        con = DbConnection.createDbConnection();
         int id = 0;
-
         if (con != null) {
             String query = "SELECT borrows.book_copy_id " +
                     "FROM borrows " +
@@ -200,18 +197,17 @@ public class BorrowController {
     }
 
     public void ReturnBookCopy(int BookCopyId) {
-        con = DbConnection.createDbConnection();
         if (con != null) {
             String query = "UPDATE `bookcopy` SET `status`=? WHERE `id`=? ";
             try {
-
                 PreparedStatement preparedStatement = con.prepareStatement(query);
-                preparedStatement.setString(1, "Avialable");
+                preparedStatement.setString(1, "Available");
                 preparedStatement.setInt(2, BookCopyId);
                 int count = preparedStatement.executeUpdate();
                 if (count != 0) {
                     System.out.println("Book Returned Successfully");
                 }
+
                 removeTheBorrow(BookCopyId);
 
             } catch (Exception ex) {
@@ -221,14 +217,12 @@ public class BorrowController {
     }
 
     public void removeTheBorrow(int bookCopyId){
-        con = DbConnection.createDbConnection();
         if (con != null) {
             String query = "delete from borrows where book_copy_id = ? ";
             try {
                 PreparedStatement pstm = con.prepareStatement(query);
                 pstm.setInt(1, bookCopyId);
                 pstm.executeUpdate();
-
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -237,7 +231,6 @@ public class BorrowController {
 
 
     public void showBorrowedBooks(){
-        con = DbConnection.createDbConnection();
         if (con != null) {
             String query = "SELECT book.title, user.first_name, user.member_number, borrows.date " +
                     "FROM borrows " +
@@ -250,11 +243,10 @@ public class BorrowController {
                 ResultSet data = stmt.executeQuery(query);
                 while (data.next()) {
                     System.out.format("%s\t%s\t%s\t%tF\n",
-                            data.getString("title"),
-                            data.getString("first_name"),
-                            data.getString("member_number"),
-                            data.getDate("date"));
-
+                    data.getString("title"),
+                    data.getString("first_name"),
+                    data.getString("member_number"),
+                    data.getDate("date"));
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

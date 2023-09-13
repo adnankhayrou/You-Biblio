@@ -1,4 +1,4 @@
-import java.util.Date;
+package Models;
 
 public class User {
     private int id;

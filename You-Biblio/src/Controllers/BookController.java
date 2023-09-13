@@ -1,3 +1,8 @@
+package Controllers;
+
+import Models.Book;
+import database.DbConnection;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,8 +33,8 @@ public class BookController {
     public void showAllBooks(){
         if (con != null) {
             String query = "select * from book";
-            System.out.println("Books Details : ");
-            System.out.format("%s\t%s\t%s\t%s\t%s\t%s\n", "ID", "Title", "Author", "Isbn", "Quantity", "Status");
+            System.out.println("\nBooks Details : ");
+            System.out.format("%s\t%s\t%s\t%s\t%s\t%s", "ID", "Title", "Author", "Isbn", "Quantity", "Status");
             try {
                 Statement stmt = con.createStatement();
                 ResultSet data = stmt.executeQuery(query);
@@ -42,7 +47,7 @@ public class BookController {
                     data.getInt(5));
                     int count = data.getInt(5);
                     if (count >= 1){
-                        System.out.println("Available");
+                        System.out.println("Available\n");
                     }else {
                         System.out.println("Not Available\n");
                     }
@@ -65,19 +70,23 @@ public class BookController {
 
                 ResultSet result = pstm.executeQuery();
                 if (!result.isBeforeFirst()) {
-                    System.out.println("No book found with this word : " + word + "!");
+                    System.out.println("\nNo book found with this word : " + word + "!\n");
                 }else {
-                    System.out.println("Result : ");
+                    System.out.println("\nResult : ");
                     System.out.format("%s\t%s\t%s\t%s\t%s\t%s\n", "ID", "Title", "Author", "Isbn", "Quantity", "Status");
                     while (result.next()){
-                        System.out.format("%s\t%s\t%s\t%s\t%d\t%s\n",
-                                result.getString(1),
-                                result.getString(2),
-                                result.getString(3),
-                                result.getString(4),
-                                result.getInt(5),
-                                result.getString(6));
-
+                        System.out.format("%s\t%s\t%s\t%s\t\t%d\t\t",
+                        result.getString(1),
+                        result.getString(2),
+                        result.getString(3),
+                        result.getString(4),
+                        result.getInt(5));
+                        int count = result.getInt(5);
+                        if (count >= 1){
+                            System.out.println("Available\n");
+                        }else {
+                            System.out.println("Not Available\n");
+                        }
                     }
                 }
             } catch (Exception ex) {
@@ -86,10 +95,8 @@ public class BookController {
         }
 
     }
-    //update book
-    public void updateBook(){
 
-    }
+
     // check if book exists
     public boolean checkBookExists(String isbn) {
         if (con != null) {
@@ -136,7 +143,7 @@ public class BookController {
         if (con != null) {
             boolean check = checkBorrowedBook(bookIsbn);
             if (check) {
-                System.out.println("\nYou can't Delete a Borrowed Book\n");
+                System.out.println("\nYou can't Delete a Borrowed Models.Book\n");
             }else{
             String query = "delete from book where isbn = ? ";
             try {
@@ -179,7 +186,7 @@ public class BookController {
     public void checkAndMarkLostBooks(){
         if (con != null) {
             try {
-                String query = "SELECT id, book_copy_id FROM borrows WHERE date < DATE_SUB(NOW(), INTERVAL 5 MINUTE)";
+                String query = "SELECT id, book_copy_id FROM borrows WHERE date < DATE_SUB(NOW(), INTERVAL 1 MINUTE)";
                 PreparedStatement stmt = con.prepareStatement(query);
                 ResultSet result = stmt.executeQuery();
 
