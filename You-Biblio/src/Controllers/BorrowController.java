@@ -232,21 +232,22 @@ public class BorrowController {
 
     public void showBorrowedBooks(){
         if (con != null) {
-            String query = "SELECT book.title, user.first_name, user.member_number, borrows.date " +
+            String query = "SELECT book.title, user.first_name, user.member_number, borrows.book_copy_id, borrows.date " +
                     "FROM borrows " +
                     "JOIN book ON borrows.book_id = book.id " +
                     "JOIN user ON borrows.user_id = user.id";
-            System.out.println("Books Details : ");
-            System.out.format("%s\t%s\t%s\t%s\n", "Book", "Member Name", "Member Number", "Date");
+            System.out.println("\nBooks Details : ");
+            System.out.format("%s\t%s\t%s\t%s\t%s\n", "Book Title", "Book Number", "Member Name", "Member Number", "Date");
             try {
                 Statement stmt = con.createStatement();
                 ResultSet data = stmt.executeQuery(query);
                 while (data.next()) {
-                    System.out.format("%s\t%s\t%s\t%tF\n",
-                    data.getString("title"),
-                    data.getString("first_name"),
-                    data.getString("member_number"),
-                    data.getDate("date"));
+                    System.out.format("%s\t\t%d\t\t\t%s\t\t%s\t\t\t%tF\n",
+                            data.getString("title"),
+                            data.getInt("book_copy_id"),
+                            data.getString("first_name"),
+                            data.getString("member_number"),
+                            data.getDate("date"));
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
